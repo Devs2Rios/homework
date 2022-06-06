@@ -1,2 +1,2 @@
-# homework
+# Homework
 Homework exercises
