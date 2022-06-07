@@ -29,50 +29,43 @@ let john_height_2 = 1.76;
 
 let markHigherBMI = true;
 
-console.log("First BMI: "); 
-console.log(`Marks mass: ${mark_mass_1}`);
-console.log(`Marks height: ${mark_height_1}`);
 let mark_BMI_data1 = 0;
 
 mark_BMI_data1 = mark_mass_1 / (mark_height_1 ** 2);
 
 
-console.log(`Johns mass: ${john_mass_1}`);
-console.log(`Johns height: ${john_height_1}`);
 let john_BMI_data1 = 0;
 
 john_BMI_data1 = john_mass_1 / (john_height_1 ** 2);
 
 if(mark_BMI_data1 > john_BMI_data1){
 
-    console.log(`Marks BMI is higher than Johns? = ${markHigherBMI}`);
+    console.log(`${mark_BMI_data1} > ${john_BMI_data1} = ${markHigherBMI}`);
 } else{
 
     markHigherBMI = false;
-    console.log(`Marks BMI is higher than Johns? = ${markHigherBMI}`);
+    console.log(`${mark_BMI_data1} > ${john_BMI_data1} = ${markHigherBMI}`);
 }
 
 //////////////////////////////////////////////////////////////
-console.log("Second BMI:");
-console.log(`Marks mass: ${mark_mass_2}`);
-console.log(`Marks height: ${mark_height_2}`);
+
+
 let mark_BMI_data2 = 0;
 
 mark_BMI_data2 = mark_mass_2 / (mark_height_2 ** 2);
 
 
-console.log(`Johns mass: ${john_mass_2}`);
-console.log(`Johns height: ${john_height_2}`);
 let john_BMI_data2 = 0;
 
 john_BMI_data2 = john_mass_2 / (john_height_2 ** 2);
 
-if(mark_BMI_data2 > john_BMI_data2){
-    console.log(`Marks BMI ${mark_BMI_data2} is higher than Johns ${john_BMI_data2}? = ${markHigherBMI}`);
+if(mark_BMI_data2 > john_BMI_data2cle){
+
+    console.log(`${mark_BMI_data2} > ${john_BMI_data2} = ${markHigherBMI}`);
 } else{
 
     markHigherBMI = false;
-    console.log(`Marks BMI ${mark_BMI_data2} is higher than Johns ${john_BMI_data2}? = ${markHigherBMI}`);
+    console.log(`${mark_BMI_data2} > ${john_BMI_data2} = ${markHigherBMI}`);
 }
 
 
