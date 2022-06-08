@@ -1,6 +1,6 @@
 // Coding challenge 1
 
-function bodyMassIndex (mass, height) {return mass / height ** 2};
+function bodyMassIndex(mass, height) {return mass / height ** 2};
 
 tests = {
     pedro: {
