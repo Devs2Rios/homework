@@ -3,8 +3,8 @@
 // Average calculation function
 const average = (...scores) => {
     const numOfScores = scores.length;
-    const sumOfScores = scores.reduce((a, b) => a + b, 0)
-    return sumOfScores/numOfScores
+    const sumOfScores = scores.reduce((a, b) => a + b, 0);
+    return sumOfScores/numOfScores;
 }
 
 // Test data
