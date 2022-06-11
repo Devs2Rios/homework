@@ -5,12 +5,11 @@ function totalCheck(bill, tip) {
         return bill * tip;
     } 
     const tipRegEx = /\d{1,3}%/;
-    if (tipRegEx.exec(tip)) {
-        const percentage = parseInt(tip.replace('%', '')) / 100;
-        return bill + calcTip(bill, percentage);
-    } else {
-        return `Please enter a percentage string like 10% not ${typeof tip} ${tip}`;
-    }
+    return (
+        tipRegEx.exec(tip) ?
+        bill + calcTip(bill, parseInt(tip.replace('%', '')) / 100) :
+        `Please enter a percentage string like 10% not ${typeof tip} ${tip}`
+    );
 };
 
 function calcAverage(arr) {return arr.reduce((a,b) => a+b, 0) / arr.length;};
