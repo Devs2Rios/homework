@@ -39,8 +39,3 @@ if (day === "monday") {
 } else {
   console.log("Not a day!");
 }
-
-// if('a' === 'a'){
-//   console.log('they are equal')
-// }
-// console.log('they are different')
