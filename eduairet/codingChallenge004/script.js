@@ -7,7 +7,7 @@ function totalCheck(bill, tip) {
     const tipRegEx = /\d{1,3}%/;
     return (
         tipRegEx.exec(tip) ?
-        bill + calcTip(bill, parseInt(tip.replace('%', '')) / 100) :
+        bill + calcTip(bill, parseInt(tip.replace('%', '')) / 100, 10) :
         `Please enter a percentage string like 10% not ${typeof tip} ${tip}`
     );
 };
