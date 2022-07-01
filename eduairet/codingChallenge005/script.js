@@ -1,4 +1,4 @@
-// Coding challenge 3
+// Coding challenge 5 - Part 2 #1 
 'use strict';
 // -----------------------------------------------
 // Average calculation function
