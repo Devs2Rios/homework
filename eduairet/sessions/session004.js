@@ -1,4 +1,4 @@
-// 1 Jul 2022
+// 1 Jul 2022 - Most profit from stock quotes - https://www.codewars.com/kata/597ef546ee48603f7a000057/train/javascript
 'use strict';
 // -----------------------------------------------------
 
