@@ -6,13 +6,14 @@ const data1 = [17, 21, 23],
   data2 = [12, 5, -5, 0, 4];
 // Create a function 'printForecast' which takes in an array 'arr'.
 const printForecast = arr => {
+  const glyph = '…';
   // Use the map function to create an array from the given array with the desired structure
   // and join it into a string using a template literal
-  const givenTemperatures = `… ${arr
+  const givenTemperatures = `${glyph} ${arr
     .map((temp, i) => {
       return `${temp}ºC in ${i + 1} day(s)`;
     })
-    .join(' … ')} …`;
+    .join(` ${glyph} `)} ${glyph}`;
   // Return the string with the given temperatures.
   return givenTemperatures;
 };
