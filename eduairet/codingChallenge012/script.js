@@ -7,6 +7,17 @@
 // -------------------------------------------------------------------------
 const rollDiceNumber = () => 1 + Math.round(Math.random() * 5);
 // -------------------------------------------------------------------------
+// Mutable variables
+// -------------------------------------------------------------------------
+let cRoll,
+  cScore,
+  cPlayer,
+  cPlayerIndex,
+  cPlayerName,
+  cPlayerScore,
+  cPlayerCScore,
+  endGame;
+// -------------------------------------------------------------------------
 // Player object
 // -------------------------------------------------------------------------
 const player = {
@@ -21,17 +32,6 @@ const player = {
   },
 };
 // -------------------------------------------------------------------------
-// Mutable variables
-// -------------------------------------------------------------------------
-let cRoll,
-  cScore,
-  cPlayer,
-  cPlayerIndex,
-  cPlayerName,
-  cPlayerScore,
-  cPlayerCScore,
-  endGame;
-// -------------------------------------------------------------------------
 // HTML elements
 // -------------------------------------------------------------------------
 const dice = document.querySelector('.dice'),
@@ -39,7 +39,7 @@ const dice = document.querySelector('.dice'),
   hold = document.querySelector('.btn.btn--hold'),
   newGame = document.querySelector('.btn.btn--new');
 // -------------------------------------------------------------------------
-// Define current player
+// Current player definer
 const defCPlayer = () => {
   cPlayerIndex = player.one.turn ? 0 : 1;
   cPlayer = player[cPlayerIndex === 0 ? 'one' : 'two'];
@@ -51,20 +51,16 @@ const defCPlayer = () => {
     .querySelector(`#name--${player.one.turn ? 1 : 0}`)
     .classList.remove('playing');
 };
-// Presets
+// Preset
 const preset = () => {
   dice.classList.add('hidden');
-  dice.src = `dice-1.png`;
+  dice.src = 'dice-1.png';
   player.one.turn = true;
   player.two.turn = !player.one.turn;
-  for (const pScore of [player.one, player.two]) pScore.score = 0;
   for (let i = 0; i < 2; i++) {
+    player[i === 0 ? 'one' : 'two'].score = 0;
     document.querySelector(`#name--${i}`).textContent = `Player ${i + 1}`;
-  }
-  for (let i = 0; i < 2; i++) {
     document.querySelector(`#score--${i}`).textContent = 0;
-  }
-  for (let i = 0; i < 2; i++) {
     document.querySelector(`#current--${i}`).textContent = 0;
   }
   cScore = 0;
