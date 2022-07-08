@@ -3,23 +3,23 @@
 // -------------------------------------------------------------------------
 'use strict';
 // -------------------------------------------------------------------------
-// Utility
-// -------------------------------------------------------------------------
-const rollDiceNumber = () => 1 + Math.round(Math.random() * 5);
-// -------------------------------------------------------------------------
 // Mutable variables
 // -------------------------------------------------------------------------
 let cRoll,
   cScore,
   cPlayer,
+  cPlayerSection,
   cPlayerIndex,
   cPlayerName,
   cPlayerScore,
   cPlayerCScore,
   endGame;
 // -------------------------------------------------------------------------
-// Player object
+// Constant variables
 // -------------------------------------------------------------------------
+// Random dice number
+const rollDiceNumber = () => 1 + Math.round(Math.random() * 5);
+// Player object
 const player = {
   one: { turn: true, score: 0 },
   two: { turn: false, score: 0 },
@@ -37,38 +37,47 @@ const player = {
 const dice = document.querySelector('.dice'),
   rollDice = document.querySelector('.btn.btn--roll'),
   hold = document.querySelector('.btn.btn--hold'),
-  newGame = document.querySelector('.btn.btn--new');
+  newGame = document.querySelector('.btn.btn--new'),
+  playerSection1 = document.querySelector('.player--0'),
+  playerSection2 = document.querySelector('.player--1');
+// -------------------------------------------------------------------------
+// Presets
 // -------------------------------------------------------------------------
 // Current player definer
 const defCPlayer = () => {
   cPlayerIndex = player.one.turn ? 0 : 1;
   cPlayer = player[cPlayerIndex === 0 ? 'one' : 'two'];
-  cPlayerScore = document.querySelector(`#score--${cPlayerIndex}`);
-  cPlayerCScore = document.querySelector(`#current--${cPlayerIndex}`);
-  cPlayerName = document.querySelector(`#name--${cPlayerIndex}`);
-  cPlayerName.classList.add('playing');
-  document
-    .querySelector(`#name--${player.one.turn ? 1 : 0}`)
-    .classList.remove('playing');
+  cPlayerSection = document.querySelector(`.player--${cPlayerIndex}`);
+  cPlayerScore = document.getElementById(`score--${cPlayerIndex}`);
+  cPlayerCScore = document.getElementById(`current--${cPlayerIndex}`);
+  cPlayerName = document.getElementById(`name--${cPlayerIndex}`);
 };
-// Preset
+// Preset function
 const preset = () => {
   dice.classList.add('hidden');
   dice.src = 'dice-1.png';
   player.one.turn = true;
   player.two.turn = !player.one.turn;
+  for (const playerClassEl of document.querySelectorAll('.player')) {
+    if (playerClassEl.classList.contains('player--winner')) {
+      playerClassEl.classList.remove('player--winner');
+    }
+  }
   for (let i = 0; i < 2; i++) {
     player[i === 0 ? 'one' : 'two'].score = 0;
-    document.querySelector(`#name--${i}`).textContent = `Player ${i + 1}`;
-    document.querySelector(`#score--${i}`).textContent = 0;
-    document.querySelector(`#current--${i}`).textContent = 0;
+    document.getElementById(`name--${i}`).textContent = `Player ${i + 1}`;
+    document.getElementById(`score--${i}`).textContent = 0;
+    document.getElementById(`current--${i}`).textContent = 0;
   }
   cScore = 0;
   cRoll = 0;
   endGame = false;
+  playerSection1.classList.add('player--active');
   defCPlayer();
 };
+// Preset call when the page is loaded
 preset();
+// -------------------------------------------------------------------------
 // Game
 // -------------------------------------------------------------------------
 // Flush manages the score accounting and changes player
@@ -79,12 +88,18 @@ const flush = () => {
   if (cPlayer.score >= 100) {
     endGame = true;
     cPlayerName.textContent = 'Winner!';
+    cPlayerSection.classList.remove('player--active');
+    cPlayerSection.classList.add('player--winner');
   }
-  cPlayerScore.textContent = cPlayer.score;
-  cPlayerCScore.textContent = 0;
-  cScore = -1;
-  player.changeTurn();
-  defCPlayer();
+  if (!endGame) {
+    playerSection1.classList.toggle('player--active');
+    playerSection2.classList.toggle('player--active');
+    cPlayerScore.textContent = cPlayer.score;
+    cPlayerCScore.textContent = 0;
+    cScore = -1;
+    player.changeTurn();
+    defCPlayer();
+  }
 };
 // Throw your dice
 rollDice.addEventListener('click', function() {
@@ -99,6 +114,7 @@ rollDice.addEventListener('click', function() {
         cScore += cRoll;
         cPlayerCScore.textContent = cScore;
         cPlayerScore.textContent = cPlayer.score;
+        dice.classList.add('hidden');
     }
   }
 });
