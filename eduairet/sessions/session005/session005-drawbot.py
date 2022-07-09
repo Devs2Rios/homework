@@ -3,7 +3,7 @@
 https://www.codewars.com/kata/545f05676b42a0a195000d95/train/python
 '''
 
-from drawBot import *
+from drawBot import * #El módulo DrawBot solo funciona en Mac
 
 # Tests de la coding Challenge
 tests = [
