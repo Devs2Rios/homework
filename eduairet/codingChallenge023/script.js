@@ -1,9 +1,8 @@
+/////////////////////////////////////////////////
+// BANKIST APP
 'use strict';
 
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
@@ -35,6 +34,7 @@ const account4 = {
 
 const accounts = [account1, account2, account3, account4];
 
+/////////////////////////////////////////////////
 // Elements
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
@@ -61,7 +61,10 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movs) {
+/////////////////////////////////////////////////
+// Util
+
+const displayMovements = movs => {
   containerMovements.innerHTML = '';
   movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
@@ -77,7 +80,6 @@ const displayMovements = function (movs) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
 
 const createUsernames = function (accts) {
   accts.forEach(
@@ -89,47 +91,72 @@ const createUsernames = function (accts) {
         .join(''))
   );
 };
-createUsernames(accounts);
 
-const calcPrintBalance = movements => {
-  const balance = movements.reduce((a, b) => a + b);
-  labelBalance.textContent = balance.toFixed(2);
+const calcPrintBalance = acc => {
+  const balance = acc.movements.reduce((a, b) => a + b);
+  acc.balance = balance;
+  labelBalance.textContent = `${balance.toFixed(2)}€`;
 };
-calcPrintBalance(account1.movements);
 
-const calcDisplaySummary = movs => {
-  labelSumIn.textContent = `${movs
-    .filter(m => m > 0)
-    .reduce((a, b) => a + b, 0)}€`;
+const calcDisplaySummary = acc => {
+  labelSumIn.textContent = `${acc?.movements
+    ?.filter(m => m > 0)
+    ?.reduce((a, b) => a + b, 0)}€`;
   labelSumOut.textContent = `${Math.abs(
-    movs.filter(m => m < 0).reduce((a, b) => a + b, 0)
+    acc?.movements?.filter(m => m < 0).reduce((a, b) => a + b, 0)
   )}€`;
-  labelSumInterest.textContent = `${movs
-    .filter(m => m > 0)
-    .map(dp => (dp * 1.2) / 100)
-    .filter((int, i, arr) => int >= 1)
-    .reduce((a, b) => a + b, 0)}€`;
+  labelSumInterest.textContent = `${acc?.movements
+    ?.filter(m => m > 0)
+    ?.map(dp => (dp * acc.interestRate) / 100)
+    ?.filter((int, i, arr) => int >= 1)
+    ?.reduce((a, b) => a + b, 0)}€`;
+};
+
+const updateUI = acc => {
+  // Movements
+  displayMovements(acc.movements);
+  // Balance
+  calcPrintBalance(acc);
+  // Summary
+  calcDisplaySummary(acc);
 };
 
 /////////////////////////////////////////////////
+// Manipulations
+
+createUsernames(accounts);
+let currentUser;
+
+btnLogin.addEventListener('click', e => {
+  e.preventDefault(); // Prevent submit, enter retrieve in forms
+  currentUser = accounts.find(acc => acc.username === inputLoginUsername.value);
+  if (currentUser?.pin == inputLoginPin.value) {
+    // Display UI and welcome message
+    labelWelcome.textContent = `Welcome back ${
+      currentUser.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+    // Clear fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputClosePin.blur(); // looses focus
+    updateUI(currentUser);
+  }
+});
+
+btnTransfer.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(a => a.username === inputTransferTo.value);
+  inputTransferAmount.value = inputTransferTo.value = '';
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentUser.balance >= amount &&
+    receiverAcc?.username !== currentUser.username
+  ) {
+    currentUser.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    updateUI(currentUser);
+  }
+});
 /////////////////////////////////////////////////
-// LECTURES
-
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
-
-const eurToUSD = 1.1;
-const totalInUSD = movements
-  .filter(mov => mov > 0)
-  .map(mov => mov * eurToUSD)
-  .reduce((a, b) => a + b, 0);
-console.log(totalInUSD);
-
-calcDisplaySummary(movements);
