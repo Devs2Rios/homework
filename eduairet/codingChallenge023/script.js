@@ -64,9 +64,10 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Util
 
-const displayMovements = movs => {
+const displayMovements = (movs, sorted = false) => {
   containerMovements.innerHTML = '';
-  movs.forEach((mov, i) => {
+  const movsCopy = sorted ? [...movs].sort((a, b) => a - b) : movs;
+  movsCopy.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
       <div class="movements__row">
@@ -125,12 +126,13 @@ const updateUI = acc => {
 // Manipulations
 
 createUsernames(accounts);
-let currentUser;
+let currentUser,
+  sorted = false;
 
 btnLogin.addEventListener('click', e => {
   e.preventDefault(); // Prevent submit, enter retrieve in forms
   currentUser = accounts.find(acc => acc.username === inputLoginUsername.value);
-  if (currentUser?.pin == inputLoginPin.value) {
+  if (currentUser?.pin === Number(inputLoginPin.value)) {
     // Display UI and welcome message
     labelWelcome.textContent = `Welcome back ${
       currentUser.owner.split(' ')[0]
@@ -159,4 +161,105 @@ btnTransfer.addEventListener('click', e => {
     updateUI(currentUser);
   }
 });
+
+btnLoan.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentUser.movements.some(mov => mov >= amount * 0.1)) {
+    currentUser.movements.push(amount);
+    updateUI(currentUser);
+  }
+  inputLoanAmount.value = '';
+});
+
+btnClose.addEventListener('click', e => {
+  e.preventDefault();
+  if (
+    currentUser.username === inputCloseUsername.value &&
+    currentUser.pin === Number(inputClosePin.value)
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentUser.username
+    );
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = 'Log in to get started';
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+btnSort.addEventListener('click', e => {
+  e.preventDefault();
+  displayMovements(currentUser?.movements, sorted);
+  sorted = !sorted;
+});
+/////////////////////////////////////////////////
+
+// Practice
+
+// Check the movements in the terminal
+labelBalance.addEventListener('click', () => {
+  const movsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movsUI);
+});
+
+// 1
+const bankDepositSum = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov > 0)
+  .reduce((a, b) => a + b);
+
+console.log(bankDepositSum);
+
+// 2
+const deps1000 = accounts
+  .flatMap(acc => acc.movements)
+  .filter(mov => mov >= 1000).length;
+
+const deps1000reduce = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((a, b) => (b >= 1000 ? ++a : a), 0);
+// a++ cannot be used because it always return the old value
+// but you can use ++a
+
+console.log(deps1000);
+console.log(deps1000reduce);
+
+// 3
+const sums = accounts
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      /*{
+      cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur);
+      },*/
+      sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur;
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+
+console.log(sums);
+
+// 4
+const toTitle = title => {
+  const exceptions = ['a', 'the', 'but', 'or', 'on', 'in', 'with'];
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map((word, i) =>
+      i > 0 && exceptions.includes(word)
+        ? word
+        : `${word[0].toUpperCase()}${word.slice(1)}`
+    )
+    .join(' ');
+  return titleCase;
+};
+
+console.log(toTitle('the napalm in the morning'));
+console.log(toTitle('minted on ethereum'));
+
 /////////////////////////////////////////////////
